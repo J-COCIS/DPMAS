@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
 import os
 from pathlib import Path
 from pyexpat.errors import messages
+from django.forms.renderers import TemplatesSetting
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'dpmas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'healthcare_db',
+        'NAME': 'bingo',
         'USER': 'root',
         'PASSWORD': 'mike0309',
         'HOST': 'localhost',  # Set to your database host
@@ -151,3 +151,16 @@ LOGIN_URL = 'login'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#mail server configuration
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.elasticemail.com'  # Your SMTP server
+EMAIL_PORT = 2525  # Port for your SMTP server
+EMAIL_USE_TLS = True  # Whether to use TLS for secure connections
+EMAIL_HOST_USER = 'mukunyumike@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'B5BF9878D7B9A9E89DC356ECECDA1DDFCA3A'  # Your email password
+DEFAULT_FROM_EMAIL = 'mukunyumike@gmail.com'  # Default sender email address
+ 

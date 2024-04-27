@@ -1,17 +1,24 @@
+from email.message import EmailMessage
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .models import Medical, User, Ment, Profile
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import auth
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect
 import numpy as np
 import os
 from django.contrib import messages
 import joblib as joblib
 from django.contrib.auth.hashers import make_password
 import pandas as pd
+import random
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
 import pickle
 
 # load databasedataset===================================
@@ -39,36 +46,108 @@ def category(request):
 
 
 def registerUserPatient(request):
-	if request.method == 'POST':
-		username = request.POST['username']
-		email = request.POST['email']
-		password = request.POST['password']
-		password = make_password(password)
-
-		a = User(username=username, email=email, password=password, is_patient=True)
-		a.save()
-		msg = messages.success(request, 'Account Was Created Successfully, You can now Login')
-		return render(request, 'login.html',msg)
-	    
-	else:
-		messages.error(request, 'Failed To Register, Try Again Later')
-		return redirect('reg1')
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        request.session["first_name"]=first_name
+        request.session["last_name"]=last_name
+        request.session["username"]=username
+        request.session["password"]=password1
+        request.session["email"]=email
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.info(request, 'Username taken')
+                return redirect('category')
+            elif User.objects.filter(email=email).exists():
+                messages.info(request, 'Email already in use')
+                return redirect('category')
+            else:
+                send_otp1(request)
+                return render(request,'otp1.html',{"email":email})
+        else:
+            messages.info(request,"password mismatch")
+            return redirect("category")
+                
+	
 	
 
 def registerUserDoctor(request):
-	if request.method == 'POST':
-		username = request.POST['username']
-		email = request.POST['email']
-		password = request.POST['password']
-		password = make_password(password)
+      if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        request.session["first_name"]=first_name
+        request.session["last_name"]=last_name
+        request.session["username"]=username
+        request.session["password"]=password1
+        request.session["email"]=email
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.info(request, 'Username taken')
+                return redirect('category')
+            elif User.objects.filter(email=email).exists():
+                messages.info(request, 'Email already in use')
+                return redirect('category')
+            else:
+                send_otp2(request)
+                return render(request,'opt2.html',{"email":email})
+        else:
+            messages.info(request,"password mismatch")
+            return redirect("category")
+	
+				
+	
+def send_otp1(request):
+    s=""
+    for x in range(0,4):
+        s+=str(random.randint(0,9))
+    request.session["otp"]=s
+    send_mail("otp for sign up",s,'mukunyumike@gmail.com',[request.session['email']],fail_silently=False)
+    return render(request,"otp1.html")
 
-		a = User(username=username, email=email, password=password, is_doctor=True)
-		a.save()
-		msg = messages.success(request, 'Account Was Created Successfully, You can now Login')
-		return render(request, 'login.html',msg)
-	else:
-		messages.error(request, 'Failed To Register, Try Again Later')
-		return redirect('reg2')
+def send_otp2(request):
+    s=""
+    for x in range(0,4):
+        s+=str(random.randint(0,9))
+    request.session["otp"]=s
+    send_mail("otp for sign up",s,'mukunyumike@gmail.com',[request.session['email']],fail_silently=False)
+    return render(request,"opt2.html")
+
+def  otp_verification1(request):
+    if  request.method=='POST':
+        otp_=request.POST.get("otp")
+    if otp_ == request.session["otp"]:
+        encryptedpassword=make_password(request.session['password'])
+        user=User(first_name=request.session['first_name'],last_name=request.session['last_name'],username=request.session['username'],email=request.session['email'],password=encryptedpassword,is_patient=True)
+        user.save()
+        messages.info(request,'signed in successfully...')
+        User.is_active=True
+        return redirect('patient')
+    else:
+        messages.error(request,"otp doesn't match")
+        return render(request,'otp1.html')
+
+def  otp_verification2(request):
+    if  request.method=='POST':
+        otp_=request.POST.get("otp")
+    if otp_ == request.session["otp"]:
+        encryptedpassword=make_password(request.session['password'])
+        user=User(first_name=request.session['first_name'],last_name=request.session['last_name'],username=request.session['username'],email=request.session['email'],password=encryptedpassword,is_doctor=True)
+        user.save()
+        messages.info(request,'signed in successfully...')
+        User.is_active=True
+        return redirect('doctor')
+    else:
+        messages.error(request,"otp doesn't match")
+        return render(request,'otp2.html')		
+
 
 def loginView(request):
 	if request.method == 'POST':
@@ -87,8 +166,24 @@ def loginView(request):
 			messages.info(request, "Invalid Username Or Password")
 			return redirect('login')
 	else:
-		return render(request, 'login.html')					
+		return render(request, 'login.html')	
 
+
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # To keep the user logged in
+            return redirect('password_change_done')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
+
+def password_change_done(request):
+    return render(request, 'password_change_done.html')
 
 
 def doctor_home(request):
@@ -251,7 +346,7 @@ def patient_ment(request):
 	return render(request, 'patient/ment.html', context)
 
 
-
+@login_required
 def logoutView(request):
 	logout(request)
 	return redirect('login')

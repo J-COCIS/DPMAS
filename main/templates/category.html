@@ -20,6 +20,35 @@
     </head>
 </head>
 
+<script>
+  function togglePassword() {
+      var passwordField = document.getElementById("id_password1");
+      if (passwordField.type === "password") {
+          passwordField.type = "text";
+      } else {
+          passwordField.type = "password";
+      }
+      var passwordField = document.getElementById("id_password2");
+      if (passwordField.type === "password") {
+          passwordField.type = "text";
+      } else {
+          passwordField.type = "password";
+      }
+      var passwordField = document.getElementById("id_password3");
+      if (passwordField.type === "password") {
+          passwordField.type = "text";
+      } else {
+          passwordField.type = "password";
+      }
+      var passwordField = document.getElementById("id_password4");
+      if (passwordField.type === "password") {
+          passwordField.type = "text";
+      } else {
+          passwordField.type = "password";
+      }
+  }
+</script>
+
 <style>
     @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
     *{
@@ -246,36 +275,31 @@
                 <!--Patient Registration-->
                 <form method="POST" action="{% url 'reg_user_patient' %}"  class="login">
                     {% csrf_token %}
+                    <div class="field">
+                      <input type="text" placeholder="Enter First Name" name="first_name" required>
+                    </div>
+                    <div class="field">
+                      <input type="text" placeholder="Enter Second Name" name="last_name" required>
+                    </div>
                   <div class="field">
                     <input type="text" placeholder="Enter Username" name="username" required>
                   </div>
                   <div class="field">
-                    <input type="text" placeholder="Enter Email" name="email" required>
+                    <input type="email" placeholder="Enter valid Email" name="email" required>
                   </div>
                   <div class="field">
-                    <input type="password" placeholder="Password" name="password" required>
+                    <input type="password" placeholder="Create password" id="id_password1" name="password1" required>
                   </div>
-                  <div class="pass-link"><a href="#">Forgot password?</a></div>
+                  <div class="field">
+                    <input type="password" placeholder="Confirm password" id="id_password2" name="password2" required>
+                  </div>
+                  <div><input type="checkbox" onclick="togglePassword()"> Show Password</div>
                   <div class="field btn">
                     <div class="btn-layer"></div>
                     <input type="submit" id="login_btn" value="Register">
         
                     <br>
                            <br>
-                                <div class="form-group">
-                    {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-                            <div class="alert alert-success" style="color:green;"> {{ message }}</div>
-        
-                        {% endfor %}
-        
-                        
-                    </div>
-                    {% endif %}
-                </div>
                   </div>
                   <div class="signup-link">Already a User? <a href="{% url 'login' %}">Login now</a></div>
                 </form>
@@ -283,35 +307,31 @@
                 <form method="POST" action="{% url 'reg_user_doctor' %}" class="signup">
                     {% csrf_token %}
                     <div class="field">
-                      <input type="text" placeholder="Enter Username" name="username" required>
+                      <input type="text" placeholder="Enter First Name" name="first_name" required>
                     </div>
                     <div class="field">
-                      <input type="text" placeholder="Enter Email" name="email" required>
+                      <input type="text" placeholder="Enter Second Name" name="last_name" required>
                     </div>
-                    <div class="field">
-                      <input type="password" placeholder="Password" name="password" required>
-                    </div>
-                    <div class="pass-link"><a href="#">Forgot password?</a></div>
+                  <div class="field">
+                    <input type="text" placeholder="Enter Username" name="username" required>
+                  </div>
+                  <div class="field">
+                    <input type="email" placeholder="Enter valid Email" name="email" required>
+                  </div>
+                  <div class="field">
+                    <input type="password" placeholder="Create password" id="id_password3" name="password1" required>
+                  </div>
+                  <div class="field">
+                    <input type="password" placeholder="Confirm password" id="id_password4" name="password2" required>
+                  </div>
+                  <div><input type="checkbox" onclick="togglePassword()"> Show Password</div>
                     <div class="field btn">
                       <div class="btn-layer"></div>
                       <input type="submit" id="login_btn" value="Register">
           
                       <br>
                              <br>
-                                  <div class="form-group">
-                      {% if messages %}
-                      <div class="messages">
-                          {% for message in messages %}
-                          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-          
-                              <div class="alert alert-success" style="color:green;"> {{ message }}</div>
-          
-                          {% endfor %}
-          
-                          
-                      </div>
-                      {% endif %}
-                  </div>
+                                  
                     </div>
                     <div class="signup-link">Already a User? <a href="{% url 'login' %}">Login now</a></div>
                 </form>
@@ -320,6 +340,11 @@
           </div>
     </div>
 </body>
+{%if messages%}
+{%for message in messages%}
+<script>alert('{{message}}')</script>
+{%endfor%}
+{%endif%}
 </html>
 
 
@@ -341,4 +366,3 @@
     
 
 </script>
-

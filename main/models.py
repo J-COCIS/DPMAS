@@ -9,6 +9,9 @@ class User(AbstractUser):
     is_doctor = models.BooleanField(default=False)
     phonenumber = models.CharField(max_length=200,null=True)
 
+    def __str__(self):
+        return self.username
+
 
 
 class Medical(models.Model):

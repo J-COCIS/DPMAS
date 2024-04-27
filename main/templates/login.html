@@ -207,6 +207,16 @@
     }
     
 </style>
+<script>
+  function togglePassword() {
+      var passwordField = document.getElementById("id_password");
+      if (passwordField.type === "password") {
+          passwordField.type = "text";
+      } else {
+          passwordField.type = "password";
+      }
+  }
+</script>
 <body>
     <!--================Navigation bar=================-->
     <div class="main_menu">
@@ -241,21 +251,23 @@
                     <input type="text" placeholder="Username" name="username" required>
                   </div>
                   <div class="field">
-                    <input type="password" placeholder="Password" name="password" required>
+                    <input  type="password" placeholder="Password" name="password" id="id_password" required>
                   </div>
-                  <div class="pass-link"><a href="#">Forgot password?</a></div>
-                  <div class="field btn">
-                    <div class="btn-layer"></div>
-                    <input type="submit" id="login_btn" value="Login">
-                    {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
+                  <div><input type="checkbox" onclick="togglePassword()"> Show Password</div>
+                  <div class="pass-link"><a href="{% url 'password_reset' %}">Forgot password?</a></div>
+                  <div class="messages">
+                 {% if messages %}
+                          {% for message in messages %}
         
                             <div class="alert alert-success" id="msg" role="alert" style="color:red;"> {{ message }}</div>
         
                         {% endfor %}
                     </div>
                     {% endif %}
+                  <div class="field btn">
+                    <div class="btn-layer"></div>
+                    <input type="submit" id="login_btn" value="Login">
+                    
                     
                 </div>
                   </div>
