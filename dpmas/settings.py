@@ -13,14 +13,14 @@ import os
 from pathlib import Path
 from pyexpat.errors import messages
 from django.forms.renderers import TemplatesSetting
-import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 
-STATIC_DIR=os.path.join(BASE_DIR,'static')
+STATIC_DIR=os.path.join(BASE_DIR,'main/static')
 
 
 # Quick-start development settings - unsuitable for production
@@ -82,20 +82,16 @@ WSGI_APPLICATION = 'dpmas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if not DEBUG:
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bingo',
+        'USER': 'root',
+        'PASSWORD': 'mike0309',
+        'HOST': 'localhost',  # Set to your database host
+        'PORT': '3306',       # Set to your database port
     }
-
-else:
-    DATABASES = {
-        'default': dj_database_url.config(
-            # Replace this value with your local database's connection string.
-            default='postgresql://postgres:postgres@localhost:5432/mysite',
-            conn_max_age=600
-        )
-    }
-
+}
 
 
 # Password validation
