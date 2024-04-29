@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from pyexpat.errors import messages
+import dj_database_url
 from django.forms.renderers import TemplatesSetting
 
 
@@ -27,10 +28,12 @@ STATIC_DIR=os.path.join(BASE_DIR,'main/static')
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=8i2uv*f$dti1cfv^gi*k@+p&-c_vs^(9zpbmpi&wt!a%!e&uc'
+#SECRET_KEY = 'django-insecure-=8i2uv*f$dti1cfv^gi*k@+p&-c_vs^(9zpbmpi&wt!a%!e&uc'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-=8i2uv*f$dti1cfv^gi*k@+p&-c_vs^(9zpbmpi&wt!a%!e&uc')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -82,7 +85,13 @@ WSGI_APPLICATION = 'dpmas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    }
+
+else:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bingo',
@@ -92,6 +101,8 @@ DATABASES = {
         'PORT': '3306',       # Set to your database port
     }
 }
+    
+
 
 
 # Password validation
