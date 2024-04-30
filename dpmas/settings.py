@@ -166,10 +166,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.elasticemail.com'  # Your SMTP server
-EMAIL_PORT = 2525  # Port for your SMTP server
+EMAIL_HOST = 'smtp.sendgrid.net'  # Your SMTP server
+EMAIL_PORT = 587  # Port for your SMTP server
 EMAIL_USE_TLS = True  # Whether to use TLS for secure connections
-EMAIL_HOST_USER = 'mukunyumike@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'B5BF9878D7B9A9E89DC356ECECDA1DDFCA3A'  # Your email password
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'apikey'  # Your email address
+EMAIL_HOST_PASSWORD = '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'  # Your email password
 DEFAULT_FROM_EMAIL = 'mukunyumike@gmail.com'  # Default sender email address
  
